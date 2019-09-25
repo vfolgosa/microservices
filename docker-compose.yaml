@@ -1,0 +1,32 @@
+version: "3"
+services:
+  mongodb:
+      image: mongo:latest
+      container_name: "mongodb"
+      environment:
+        - MONGO_DATA_DIR=/data/db
+        - MONGO_LOG_DIR=/dev/null
+      volumes:
+        - /tmp/data/db:/data/db 
+      ports:
+          - 27017:27017
+      command: mongod --smallfiles --logpath=/dev/null # --quiet
+  
+  movie-api: 
+      container_name: movie_api
+      build:
+        context: back/.
+        dockerfile: Dockerfile
+      environment:
+        - MONGO_SERVER=mongodb:27017
+        - MOVIES_DB=movies_db
+        
+      image: movies_db_prod:latest
+      expose:
+        - 8080
+      ports:
+        - 8080:8080
+      depends_on:
+        - mongodb
+      links:
+        - mongodb    

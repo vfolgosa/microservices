@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/vfolgosa/microservices/back/src/config"
 	"github.com/vfolgosa/microservices/back/src/config/dao"
 	"github.com/vfolgosa/microservices/back/src/models"
@@ -12,10 +14,11 @@ var mdao = dao.MoviesDAO{}
 var mconf = config.Config{}
 
 func init() {
-	mconf.Read()
+	//mconf.Read()
 
-	mdao.Server = mconf.Server
-	mdao.Database = mconf.Database
+	mdao.Server = os.Getenv("MONGO_SERVER")
+	mdao.Database = os.Getenv("MOVIES_DB")
+
 	mdao.Connect()
 }
 
